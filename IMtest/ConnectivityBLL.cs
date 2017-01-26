@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using MySql.Data.MySqlClient;
-
-using System.Windows.Forms;
+﻿
 
 namespace IMtest
 {
@@ -18,7 +11,7 @@ namespace IMtest
             _credentials = value;
         }
 
-        public void UserLogin()
+        public int UserLogin()
         {
             if (_credentials.UserNameLength == 0 || _credentials.UserNameLength > 20)
             {
@@ -30,9 +23,15 @@ namespace IMtest
                 throw new LoginException(1);
             }
 
-            if (!DAL.UserLogin(_credentials))
+            int UserId = DAL.UserLogin(_credentials);
+            if (UserId == 0)
             {
                 throw new LoginException(2);
+            }
+            else
+            {
+                DAL.UserLoginUpdate(UserId);
+                return UserId;
             }
 
             //return 99;

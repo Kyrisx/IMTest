@@ -12,10 +12,17 @@ namespace IMtest
     {
         private static string _CHEMX_USER = "";
 
-        public static bool UserLogin(clsLogin credentials)
+        public static byte UserLogin(clsLogin credentials)
         {
             MySqlConnection conn = AppUserConnect();
-            MySqlCommand cmd = new MySqlCommand("Select UserId From lbim.users Where UserName = @UserName And pw = @Password", conn);
+
+            string sql = @"
+Select UserId
+From lbim.users
+Where UserName = @UserName
+    And pw = @Password";
+
+            MySqlCommand cmd = new MySqlCommand(sql , conn);
             cmd.CommandType = CommandType.Text;
 
             cmd.Parameters.AddWithValue("@UserName", credentials.UserName);
@@ -23,16 +30,71 @@ namespace IMtest
 
             DataTable dt = new DataTable();
             MySqlDataAdapter adapter = new MySqlDataAdapter(cmd);
+            adapter.FillSchema(dt, SchemaType.Mapped);
             adapter.Fill(dt);
 
             conn.Close();
 
-            if (dt.Rows.Count < 1)
+            if (dt.Rows.Count == 1)
             {
-                return false;
+                return (byte)dt.Rows[0][0];
             }
 
-            return true;    
+            return 0;    
+        }
+
+        public static void UserLoginUpdate(int UserId)
+        {
+            MySqlConnection conn = AppUserConnect();
+
+            string sql = @"
+Update lbim.users
+Set firstlogin = Case When firstlogin Is Null Then NOW() Else firstlogin End,
+lastlogin = NOW()
+Where UserId = @UserId";
+
+            MySqlCommand cmd = new MySqlCommand(sql, conn);
+            cmd.CommandType = CommandType.Text;
+
+            cmd.Parameters.AddWithValue("@UserId", UserId);
+            cmd.ExecuteNonQuery();
+
+            conn.Close();
+            return;
+        }
+
+        public static DataSet LoadUser(int UserId, int stages)
+        {
+            MySqlConnection conn = AppUserConnect();
+            DataSet ds = new DataSet();
+
+            if (stages <= 1) getContacts(conn, UserId, ds);
+
+            conn.Close();
+            return ds;               
+        }
+
+        private static void getContacts(MySqlConnection conn, int UserId, DataSet ds)
+        {
+            DataTable dt = new DataTable();
+            string sql = @"
+Select cl.ContactId, u.UserName, u.FirstName, u.LastName
+From lbim.contactlist cl
+Join lbim.users u On cl.ContactId = u.UserId
+Where cl.UserId = @UserId
+    And DateAdded Is Not Null";
+
+            MySqlCommand cmd = new MySqlCommand(sql, conn);
+            cmd.CommandType = CommandType.Text;
+
+            cmd.Parameters.AddWithValue("@UserId", UserId);
+            MySqlDataAdapter adapter = new MySqlDataAdapter(cmd);
+            adapter.FillSchema(dt, SchemaType.Mapped);
+            adapter.Fill(dt);
+
+            ds.Tables.Add(dt);
+
+            return;
         }
 
         private static MySqlConnection AppUserConnect()

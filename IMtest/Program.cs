@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Net.Sockets;
 
 namespace IMtest
 {
@@ -17,12 +18,16 @@ namespace IMtest
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
 
-            if (LoginPhase())
+            int UserId = LoginPhase();            
+            if (UserId > 0)
             {
-
+                OpenSocket();
+                MainboardPhase(UserId);
             }
+            return;
         }
-        private static bool LoginPhase()
+
+        private static int LoginPhase()
         {
             frmLogin form = new frmLogin();
             form.ShowDialog();
@@ -30,9 +35,23 @@ namespace IMtest
 
             if (form.DialogResult == DialogResult.OK)
             {
-                return true;
+                return form.UserId;
             }
-            return false;
+            return 0;
+        }
+
+        private static void OpenSocket()
+        {
+            //SocketServer.StartListening();
+            SocketClient.StartClient();
+        }
+
+        private static void MainboardPhase(int UserId)
+        {
+            frmMainboard form = new frmMainboard(UserId);
+            form.ShowDialog();
+
+            return;
         }
     }
 }

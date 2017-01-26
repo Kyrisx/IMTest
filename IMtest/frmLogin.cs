@@ -5,16 +5,24 @@ namespace IMtest
 {
     public partial class frmLogin : Form
     {
+        private int _UserId;
+
         public frmLogin()
         {
+            _UserId = 0;
             InitializeComponent();
         }
 
         private void button1_Click(object sender, EventArgs e)
         {
+            // DEBUG -------------------
+            textBox1.Text = "kyrisx";
+            textBox2.Text = "gregory1";
+            // DEBUG -------------------
+
             textBox1.Enabled = false;
             textBox2.Enabled = false;
-
+            
             label3.Visible = false;
             label4.Visible = false;
             label5.Visible = false;
@@ -24,7 +32,7 @@ namespace IMtest
 
             try
             {
-                connBll.UserLogin();
+                _UserId =  connBll.UserLogin();
                 label5.Visible = true;
                 DialogResult = DialogResult.OK;
                 Close();
@@ -47,6 +55,14 @@ namespace IMtest
                 textBox1.Enabled = true;
                 textBox2.Enabled = true;
 
+            }
+        }
+
+        public int UserId
+        {
+            get
+            {
+                return _UserId;
             }
         }
     }
