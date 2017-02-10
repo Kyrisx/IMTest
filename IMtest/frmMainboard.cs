@@ -24,12 +24,12 @@ namespace IMtest
 
         private void LoadUser()
         {
-            LoadUserBLL bll = new LoadUserBLL(_UserId);
-            List<clsContactBasic> cb = new List<clsContactBasic>();
+            ContactsBLL bll = new ContactsBLL(_UserId);
+            List<clsUser> cb = new List<clsUser>();
 
-            bll.LoadUserContacts(cb);
+            bll.LoadContacts(cb);
 
-            foreach (clsContactBasic item in cb)
+            foreach (clsUser item in cb)
             {
                 listBox1.Items.Add(item.UserName);
             }

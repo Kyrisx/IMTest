@@ -4,34 +4,34 @@ namespace IMtest
 {
     class ConnectivityBLL
     {
-        private clsLogin _credentials;
+        private clsUser _credentials;
 
-        public ConnectivityBLL(clsLogin value)
+        public ConnectivityBLL(clsUser value)
         {
             _credentials = value;
         }
 
         public int UserLogin()
         {
-            if (_credentials.UserNameLength == 0 || _credentials.UserNameLength > 20)
+            if (_credentials.UserName.Length == 0 || _credentials.UserName.Length > 20)
             {
-                throw new LoginException(0);
+                throw new UserException(0);
             }
 
-            if (_credentials.PasswordLength == 0 || _credentials.PasswordLength > 30)
+            if (_credentials.Password.Length == 0 || _credentials.Password.Length > 30)
             {
-                throw new LoginException(1);
+                throw new UserException(1);
             }
 
-            int UserId = DAL.UserLogin(_credentials);
-            if (UserId == 0)
+            _credentials.Id = DAL.UserLogin(_credentials.UserName, _credentials.Password);
+            if (_credentials.Id == 0)
             {
-                throw new LoginException(2);
+                throw new UserException(2);
             }
             else
             {
-                DAL.UserLoginUpdate(UserId);
-                return UserId;
+                DAL.UserLoginUpdate(_credentials.Id);
+                return _credentials.Id;
             }
 
             //return 99;

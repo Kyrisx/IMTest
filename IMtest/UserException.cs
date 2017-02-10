@@ -8,7 +8,7 @@ using System.Runtime.Serialization;
 namespace IMtest
 {
     [Serializable]
-    public class LoginException : Exception
+    public class UserException : Exception
     {
         /*  0: Invalid User Name length
             1: Invalid Password length
@@ -17,28 +17,28 @@ namespace IMtest
               
         private int _number;
 
-        public LoginException() : base()
+        public UserException() : base()
         {
             
         }
 
-        public LoginException(int number)
+        public UserException(int number)
         {
             _number = number;
 
         }
 
-        public LoginException(string message) : base(message)
+        public UserException(string message) : base(message)
         {
             
         }
 
-        public LoginException(string message, Exception innerException) : base(message, innerException)
+        public UserException(string message, Exception innerException) : base(message, innerException)
         {
 
         }
 
-        public LoginException(SerializationInfo info, StreamingContext context) : base(info, context)
+        public UserException(SerializationInfo info, StreamingContext context) : base(info, context)
         {
 
         }

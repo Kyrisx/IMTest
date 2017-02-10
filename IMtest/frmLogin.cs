@@ -5,11 +5,11 @@ namespace IMtest
 {
     public partial class frmLogin : Form
     {
-        private int _UserId;
+        private int _userId;
 
         public frmLogin()
         {
-            _UserId = 0;
+            _userId = 0;
             InitializeComponent();
         }
 
@@ -27,17 +27,17 @@ namespace IMtest
             label4.Visible = false;
             label5.Visible = false;
 
-            clsLogin login = new clsLogin(textBox1.Text, textBox2.Text);
+            clsUser login = new clsUser(textBox1.Text, textBox2.Text);
             ConnectivityBLL connBll = new ConnectivityBLL(login);
 
             try
             {
-                _UserId =  connBll.UserLogin();
+                _userId =  connBll.UserLogin();
                 label5.Visible = true;
                 DialogResult = DialogResult.OK;
                 Close();
             }
-            catch(LoginException ex)
+            catch(UserException ex)
             {
                 switch(ex.Number)
                 {
@@ -62,7 +62,7 @@ namespace IMtest
         {
             get
             {
-                return _UserId;
+                return _userId;
             }
         }
     }
